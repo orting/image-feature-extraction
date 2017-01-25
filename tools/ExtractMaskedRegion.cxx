@@ -13,7 +13,6 @@
 #include "ife/Util/Path.h"
 
 const std::string VERSION("0.1");
-const std::string OUT_FILE_TYPE(".nii.gz");
 
 // A Functor that returns inside if a pixel value is equal to one from a predefined set
 // and return outside otherwise.
@@ -49,12 +48,12 @@ struct MembershipFunctor {
     return *this;
   }
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
   inline bool operator!=( const MembershipFunctor& other ) const {
-    return false;
+    return
+      (m_Inside != other.m_Inside) ||
+      (m_Outside != other.m_Outside) ||
+      (m_Set != other.m_Set);
   }
-#pragma GCC diagnostic pop
   
   inline bool operator==( const MembershipFunctor& other ) const {
     return !( *this != other );
@@ -66,7 +65,7 @@ struct MembershipFunctor {
     }
     return m_Outside;
   }
-
+  
 private:
   std::vector< PixelType > m_Set;
   PixelType m_Inside, m_Outside;
@@ -146,7 +145,6 @@ int main(int argc, char *argv[]) {
   // We could also use an unordered_map. TODO: Check which is fastest
   std::sort( include.begin(), include.end() );
 
-
   // Some common values/types that are always used.
   const unsigned int Dimension = 3;
   typedef itk::Image< PixelType, Dimension >  ImageType;
@@ -156,7 +154,6 @@ int main(int argc, char *argv[]) {
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( maskPath );
 
-
   // Setup the filter
   typedef MembershipFunctor< PixelType > FunctorType;
   typedef itk::UnaryFunctorImageFilter< ImageType, ImageType, FunctorType > FilterType;
@@ -164,7 +161,7 @@ int main(int argc, char *argv[]) {
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput( reader->GetOutput() );
   filter->SetFunctor( FunctorType( include, inside, outside ) );
-
+  
   // Setup the writer
   typedef itk::ImageFileWriter< ImageType >  WriterType;
   WriterType::Pointer writer =  WriterType::New();
