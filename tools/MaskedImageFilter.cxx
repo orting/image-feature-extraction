@@ -39,25 +39,14 @@ int main(int argc, char *argv[]) {
 	    "path", 
 	    cmd);
   
-  // We need a directory for storing the resulting image
   TCLAP::ValueArg<std::string> 
-    outDirArg("o", 
-	      "outdir", 
-	      "Path to output directory",
-	      true, 
-	      "", 
-	      "path", 
-	      cmd);
-
-  // We can use a prefix to generate the filename
-  TCLAP::ValueArg<std::string> 
-    prefixArg("p", 
-	      "prefix", 
-	      "Prefix to use for output filename",
-	      false, 
-	      "masked_", 
-	      "string", 
-	      cmd);  
+    outArg("o", 
+	   "out", 
+	   "Output path",
+	   true, 
+	   "", 
+	   "path", 
+	   cmd);
   
   try {
     cmd.parse(argc, argv);
@@ -71,9 +60,7 @@ int main(int argc, char *argv[]) {
   // Store the arguments
   std::string imagePath( imageArg.getValue() );
   std::string maskPath( maskArg.getValue() );
-  std::string outDirPath( outDirArg.getValue() );
-  std::string prefix( prefixArg.getValue() );
-
+  std::string outPath( outArg.getValue() );
   //// Commandline parsing is done ////
 
 
@@ -104,13 +91,7 @@ int main(int argc, char *argv[]) {
   typedef itk::ImageFileWriter< ImageType >  WriterType;
   WriterType::Pointer writer =  WriterType::New();
   writer->SetInput( maskFilter->GetOutput() );
-
-  // Base file name for output image
-  std::string baseFileName = Path::join( outDirPath, prefix );
-  
-  // Create a filename
-  std::string outFile = baseFileName + "masked" + OUT_FILE_TYPE;
-  writer->SetFileName( outFile );
+  writer->SetFileName( outPath );
   
   try {
     writer->Update();
@@ -119,7 +100,7 @@ int main(int argc, char *argv[]) {
     std::cerr << "Failed to process." << std::endl
 	      << "Image: " << imagePath << std::endl
 	      << "Mask: " << maskPath << std::endl
-	      << "Base file name: " << baseFileName << std::endl
+	      << "Out: " << outPath << std::endl
 	      << "ExceptionObject: " << e << std::endl;
     return EXIT_FAILURE;
   }
