@@ -17,7 +17,13 @@ public:
   template< typename T >
   friend std::ostream& operator<<(std::ostream&,
 				  const DenseHistogram<T>&);
-  
+
+  /*
+    DenseHistogram needs a collection of sorted edges indicating how the 
+    histogram should be generated.
+    The bins are defined as 
+    (-inf, edges[0]], (edges[0], edges[1]], ..., (edges[n-1], inf)
+  */
   template< typename InputIt >
   DenseHistogram( InputIt begin, InputIt end )
     : m_Edges( begin, end ), m_Counts( m_Edges.size() + 1 )

@@ -17,6 +17,7 @@ include_directories( SYSTEM ${ITK_INCLUDE_DIRS} )
 #include_directories( SYSTEM ${EIGEN3_INCLUDE_DIR} )
 
 include_directories( include )
+include_directories( include/ife )
 
 add_subdirectory( src )
 

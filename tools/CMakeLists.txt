@@ -22,12 +22,20 @@ set( progs
   MaskedNormalizedConvolution
   #FiniteDifference_HessianFeatures
   FiniteDifference_GradientFeatures
+  CalculateExpectedDistanceFromCenterToInterestPoints
   ExtractFeatures
   ExtractLabels
   ExtractMaskedRegion
+  ImageBrowser
   MakeBag
   MakeBagOnlyIntensity
   MakeBaggedDataset
+  GenerateROIs
+  SampleROIs
+  ExtractSlices
+  ExtractWindow
+  ResampleTest
+  #UnaryFunctorTest
   )
 foreach( prog ${progs} )
   add_executable( ${prog} ${prog}.cxx )
