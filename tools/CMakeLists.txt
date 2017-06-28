@@ -5,6 +5,7 @@ find_package(ZLIB REQUIRED)
 include_directories( SYSTEM ${ZLIB_INCLUDE_DIRS} )
 
 include_directories( "/home/pcn178/local/include/bd" )
+include_directories( "/home/silas/Projects/bagged-data/include/" )
 
 set( LIBS
   ${ITK_LIBRARIES}
@@ -23,11 +24,11 @@ set( progs
   #FiniteDifference_HessianFeatures
   FiniteDifference_GradientFeatures
   CalculateExpectedDistanceFromCenterToInterestPoints
+  ExtractBoundingBox
   ExtractFeatures
   ExtractLabels
   ExtractMaskedRegion
   ImageBrowser
-  ImageInfo
   MakeBag
   MakeBagOnlyIntensity
   MakeBaggedDataset
