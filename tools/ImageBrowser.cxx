@@ -72,7 +72,7 @@ void EstimateROICoverageFromImage( typename itk::Image< PixelType, Dimension >::
     nROIs += nSamples;
 
     // Generate ROIs and mark voxels in the ROIs as visited
-    for ( const auto& roi : generator.generate( nSamples, {x,y,z} ) ) {
+    for ( const auto& roi : generator.generate( nSamples, {{x,y,z}} ) ) {
       IteratorType roiIter( visited, roi );
       for ( roiIter.GoToBegin(); !roiIter.IsAtEnd(); ++roiIter ) {
 	roiIter.Set( true );
@@ -142,7 +142,7 @@ int main( int argc, char* argv[] ) {
 
   typedef itk::ImageRegionConstIterator< ImageType > ConstIterType;
 
-  std::string commands = "'q' : quit\n's' : Summary statistics\n'r' : ROI overlap estimation\n";
+  std::string commands = "'q' : quit\n'i' : Info about image shape\n's' : Summary statistics\n'r' : ROI overlap estimation\n";
   
   try {
     ImageType::Pointer image  = reader->GetOutput();
@@ -154,6 +154,11 @@ int main( int argc, char* argv[] ) {
     do {
       std::cin >> command;
       switch (command) {
+      case 'i': 
+	{
+	  std::cout << "Size " << image->GetLargestPossibleRegion().GetSize() << std::endl;
+	  break;
+	}
       case 's':
 	{
 	  std::set< float > uniqueValues;
@@ -224,8 +229,9 @@ void EstimateROICoverage() {
   std::uniform_int_distribution<unsigned int> disZ(z0, sizeZ);
 
   typedef itk::Image<bool, 3> ImageType;
+  typedef typename ImageType::RegionType RegionType;
   ImageType::Pointer image = ImageType::New();
-  image->SetRegions( {{0,0,0}, {sizeX+x0+1,sizeY+y0+1,sizeZ+z0+1}} );
+  image->SetRegions( RegionType({{0,0,0}}, {{sizeX+x0+1,sizeY+y0+1,sizeZ+z0+1}} ) );
   image->Allocate(true);
 
   typedef itk::ImageRegionIterator< ImageType > IteratorType;
@@ -240,12 +246,12 @@ void EstimateROICoverage() {
       unsigned int cx = disX(gen), cy = disY(gen), cz = disZ(gen);
       unsigned int lx = cx - x0, ly = cy - y0, lz = cz - z0;
 
-      IteratorType iter( image, {{lx,ly,lz}, {x,y,z}} );
+      IteratorType iter( image, RegionType({{lx,ly,lz}}, {{x,y,z}}) );
       for ( iter.GoToBegin(); !iter.IsAtEnd(); ++iter ) {
 	iter.Set( true );
       }
     }
-    IteratorType iter( image, {{x0,y0,z0},{sizeX,sizeY,sizeZ}} );
+    IteratorType iter( image, RegionType({{x0,y0,z0}},{{sizeX,sizeY,sizeZ}}) );
     unsigned int count = 0;
     for ( iter.GoToBegin(); !iter.IsAtEnd(); ++iter ) {
       if ( iter.Get() ) {
