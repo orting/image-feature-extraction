@@ -47,8 +47,8 @@ int main( int argc, char* argv[] ) {
 
   SpacingType spacing(&header.spacing[0]);
   PointType origin(&header.origin[0]);
-  SizeType size{header.size[0],header.size[1],header.size[2]};
-  IndexType index{0,0,0};
+  SizeType size{{header.size[0],header.size[1],header.size[2]}};
+  IndexType index{{0,0,0}};
 
   std::cout << "Got header info:" << std::endl
 	    << "Size: " << size << std::endl
