@@ -1,7 +1,9 @@
 cmake_minimum_required( VERSION 2.8.6 FATAL_ERROR )
 
 # We want C++11
-set( GCC_FLAGS "-Wall -Wextra -Wpedantic" )
+# When we have old g++ we need to use -pedantic instead of Wpedantic
+# set( GCC_FLAGS "-Wall -Wextra -Wpedantic" )
+set( GCC_FLAGS "-Wall -Wextra -pedantic" )
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_FLAGS} -std=c++11" CACHE STRING "Flags used by the compiler during all build types")
 
 project( image-feature-extraction )
@@ -15,6 +17,9 @@ include_directories( SYSTEM ${ITK_INCLUDE_DIRS} )
 
 #find_package(Eigen3 REQUIRED)
 #include_directories( SYSTEM ${EIGEN3_INCLUDE_DIR} )
+
+
+include_directories( /home/pcn178/local/include )
 
 include_directories( include )
 include_directories( include/ife )
