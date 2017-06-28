@@ -4,7 +4,7 @@ include_directories( SYSTEM ${EIGEN3_INCLUDE_DIR} )
 find_package(ZLIB REQUIRED)
 include_directories( SYSTEM ${ZLIB_INCLUDE_DIRS} )
 
-include_directories( "/home/silas/Projects/bagged-data/include/" )
+include_directories( "/home/pcn178/local/include/bd" )
 
 set( LIBS
   ${ITK_LIBRARIES}
@@ -27,39 +27,19 @@ set( progs
   ExtractLabels
   ExtractMaskedRegion
   ImageBrowser
+  ImageInfo
   MakeBag
   MakeBagOnlyIntensity
   MakeBaggedDataset
   GenerateROIs
+  PadImage
   SampleROIs
   ExtractSlices
   ExtractWindow
-  ResampleTest
-  #UnaryFunctorTest
   )
+
 foreach( prog ${progs} )
   add_executable( ${prog} ${prog}.cxx )
   target_link_libraries( ${prog} ${LIBS} )
   install( TARGETS ${prog} DESTINATION tools )
 endforeach( prog )
-
-
-# find_package(ZLIB REQUIRED)
-# include_directories(${ZLIB_INCLUDE_DIRS})
-
-# set( LIBS
-#   ${ITK_LIBRARIES}
-#   ${ZLIB_LIBRARIES}
-#   String
-#   HR2Reader
-#   )
-
-# set( progs
-#   ConvertFromOctave
-#   ConvertHR2
-#   )
-# foreach( prog ${progs} )
-#   add_executable( ${prog} ${prog}.cxx )
-#   target_link_libraries( ${prog} ${LIBS} )
-#   install( TARGETS ${prog} DESTINATION bin )
-# endforeach( prog )
