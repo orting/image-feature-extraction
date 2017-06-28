@@ -280,7 +280,7 @@ int main(int argc, char *argv[]) {
       roiGenerator.setMask( roiThresholdFilter->GetOutput() );
     }
     
-    SizeType roiSize{ roiSizeX, roiSizeY, roiSizeZ };
+    SizeType roiSize{ {roiSizeX, roiSizeY, roiSizeZ} };
     try {
       rois = roiGenerator.generate( numROIs, roiSize );
       // We should store the generated ROIs

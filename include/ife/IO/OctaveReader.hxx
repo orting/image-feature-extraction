@@ -134,7 +134,8 @@ OctaveReader<TPixel, Dimension>
 	  }
 	  PixelType p;
 	  is >> p;
-	  m_Image->SetPixel( {x,y,z}, p );
+	  IndexType idx{{x,y,z}};
+	  m_Image->SetPixel( idx, p );
 	}
       }
     }
