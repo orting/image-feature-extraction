@@ -47,6 +47,9 @@ int main(int argc, char *argv[]) {
 	   "", 
 	   "path", 
 	   cmd);
+
+  TCLAP::ValueArg<double> outsideArg("v", "outside-value", "Value to use outside mask", false, 0, "double", cmd);
+  
   
   try {
     cmd.parse(argc, argv);
@@ -61,6 +64,7 @@ int main(int argc, char *argv[]) {
   std::string imagePath( imageArg.getValue() );
   std::string maskPath( maskArg.getValue() );
   std::string outPath( outArg.getValue() );
+  const double outsideValue( outsideArg.getValue() );
   //// Commandline parsing is done ////
 
 
@@ -68,7 +72,7 @@ int main(int argc, char *argv[]) {
   const unsigned int Dimension = 3;
 
   // TODO: Need to consider which pixeltype to use
-  typedef float PixelType;
+  typedef double PixelType;
   typedef itk::Image< PixelType, Dimension >  ImageType;
   typedef itk::ImageFileReader< ImageType > ReaderType;
 
@@ -84,6 +88,7 @@ int main(int argc, char *argv[]) {
   typedef itk::MaskImageFilter< ImageType, ImageType, ImageType >
     MaskFilterType;
   MaskFilterType::Pointer maskFilter = MaskFilterType::New();
+  maskFilter->SetOutsideValue( outsideValue );
   maskFilter->SetInput1( imageReader->GetOutput() );
   maskFilter->SetInput2( maskReader->GetOutput() );
 
