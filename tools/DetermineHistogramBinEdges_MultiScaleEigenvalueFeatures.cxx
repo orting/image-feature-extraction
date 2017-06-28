@@ -81,6 +81,16 @@ int main(int argc, char *argv[]) {
 	      true, 
 	      "double", 
 	      cmd);
+
+
+  TCLAP::ValueArg<unsigned int> 
+    foregroundValueArg("f", 
+		       "foreground", 
+		       "Voxel value of foreground in mask",
+		       false, 
+		       1, 
+		       "unsigned int", 
+		       cmd);
  
   
   try {
@@ -98,6 +108,7 @@ int main(int argc, char *argv[]) {
   unsigned int nBins( nBinsArg.getValue() );
   unsigned int nSamples( nSamplesArg.getValue() );
   const std::vector< float > scales( scalesArg.getValue() );
+  const unsigned int foregroundValue( foregroundValueArg.getValue() );
   //// Commandline parsing is done ////
 
   // Some common values/types that are always used.
@@ -208,7 +219,7 @@ int main(int argc, char *argv[]) {
     
       if ( nSamples == 0 ) {
 	for ( iter.GoToBegin(); !iter.IsAtEnd(); ++iter ) {
-	  if ( iter.Get() ) {
+	  if ( iter.Get() == foregroundValue ) {
 	    auto sample = features->GetPixel( iter.GetIndex() );
 	    for ( size_t j = 0; j < sample.GetSize(); ++j ) {
 	      auto idx = j + i * numFeatures;
@@ -221,7 +232,7 @@ int main(int argc, char *argv[]) {
 	unsigned int nSampled = 0;
 	while ( nSampled < nSamples ) {
 	  for ( randomIter.GoToBegin(); !randomIter.IsAtEnd(); ++randomIter ) {
-	    if ( randomIter.Get() ) {
+	    if ( randomIter.Get() == foregroundValue ) {
 	      auto sample = features->GetPixel( randomIter.GetIndex() );
 	      for ( size_t j = 0; j < sample.GetSize(); ++j ) {
 		auto idx = j + i * numFeatures;
