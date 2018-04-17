@@ -19,6 +19,7 @@ set( progs
   ConvertFromOctave
   ConvertHR2
   DetermineHistogramBinEdges_MultiScaleEigenvalueFeatures
+  GenerateROIsManyRegions
   MaskedImageFilter
   MaskedNormalizedConvolution
   #FiniteDifference_HessianFeatures
