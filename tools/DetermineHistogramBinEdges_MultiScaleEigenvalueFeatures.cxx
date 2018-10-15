@@ -83,12 +83,11 @@ int main(int argc, char *argv[]) {
 	      cmd);
 
 
-  TCLAP::ValueArg<unsigned int> 
+  TCLAP::MultiArg<unsigned int> 
     foregroundValueArg("f", 
 		       "foreground", 
 		       "Voxel value of foreground in mask",
-		       false, 
-		       1, 
+		       true, 
 		       "unsigned int", 
 		       cmd);
  
@@ -108,7 +107,7 @@ int main(int argc, char *argv[]) {
   unsigned int nBins( nBinsArg.getValue() );
   unsigned int nSamples( nSamplesArg.getValue() );
   const std::vector< float > scales( scalesArg.getValue() );
-  const unsigned int foregroundValue( foregroundValueArg.getValue() );
+  const std::vector<unsigned int> foregroundValues( foregroundValueArg.getValue() );
   //// Commandline parsing is done ////
 
   // Some common values/types that are always used.
@@ -219,11 +218,17 @@ int main(int argc, char *argv[]) {
     
       if ( nSamples == 0 ) {
 	for ( iter.GoToBegin(); !iter.IsAtEnd(); ++iter ) {
-	  if ( iter.Get() == foregroundValue ) {
-	    auto sample = features->GetPixel( iter.GetIndex() );
-	    for ( size_t j = 0; j < sample.GetSize(); ++j ) {
-	      auto idx = j + i * numFeatures;
-	      samples[idx].push_back( sample[j] );
+	  auto iterV = iter.Get();
+	  for ( const auto acceptV : foregroundValues ) {
+	    if ( iterV == acceptV ) {
+	      auto sample = features->GetPixel( iter.GetIndex() );
+	      for ( size_t j = 0; j < sample.GetSize(); ++j ) {
+		auto idx = j + i * numFeatures;
+		samples[idx].push_back( sample[j] );
+	      }
+	      // We accept this iterator location because it is in the foreground.
+	      // So no need to check other foreground values.
+	      break;
 	    }
 	  }
 	}
@@ -232,15 +237,25 @@ int main(int argc, char *argv[]) {
 	unsigned int nSampled = 0;
 	while ( nSampled < nSamples ) {
 	  for ( randomIter.GoToBegin(); !randomIter.IsAtEnd(); ++randomIter ) {
-	    if ( randomIter.Get() == foregroundValue ) {
-	      auto sample = features->GetPixel( randomIter.GetIndex() );
-	      for ( size_t j = 0; j < sample.GetSize(); ++j ) {
-		auto idx = j + i * numFeatures;
-		samples[idx].push_back( sample[j] );
-	      }
-	      if ( ++nSampled == nSamples ) {
+	    auto iterV = randomIter.Get();
+	    for ( const auto acceptV : foregroundValues ) {
+	      if ( iterV == acceptV ) {
+		auto sample = features->GetPixel( randomIter.GetIndex() );
+		for ( size_t j = 0; j < sample.GetSize(); ++j ) {
+		  auto idx = j + i * numFeatures;
+		  samples[idx].push_back( sample[j] );
+		}
+		++nSampled;
+		// We accept this iterator location because it is in the foreground.
+		// So no need to check other foreground values.
 		break;
 	      }
+	    }
+	    // We have a double loop. We might not get enough samples from one pass of the random iterator,
+	    // in that case we reinitialize it. If we have reinitialized, we need to ensure that we dont
+	    //  get too many samples.
+	    if ( nSampled == nSamples ) {
+	      break;
 	    }
 	  }
 	}

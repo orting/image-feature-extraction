@@ -25,6 +25,7 @@ set( progs
   ConvertHR2
   CreateImageKernel3D
   DetermineHistogramBinEdges_MultiScaleEigenvalueFeatures
+  GenerateROIsManyRegions
   MaskedImageFilter
   MaskedNormalizedConvolution
   NormalizedConvolution
