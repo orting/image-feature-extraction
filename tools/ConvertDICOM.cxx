@@ -113,10 +113,12 @@ int main(int argc, char *argv[]) {
       // Patient Id
       auto it = dictionary.Find("0010|0020");
       std::string patient_id = it != dictionary.End() ? dynamic_cast<MetaDataStringType *>(it->second.GetPointer())->GetMetaDataObjectValue() : "?";
+      patient_id = trim(patient_id);
 
       // Study Date
       it = dictionary.Find("0008|0020");
       std::string study_date = it != dictionary.End() ? dynamic_cast<MetaDataStringType *>(it->second.GetPointer())->GetMetaDataObjectValue() : "?";
+      study_date = trim(study_date);
       
       // Reconstruction kernel
       it = dictionary.Find("0018|1210");
@@ -129,7 +131,7 @@ int main(int argc, char *argv[]) {
       slice_spacing = trim(slice_spacing, "_0");
 
       auto outPath = outDir;
-      outPath /= "vol" + patient_id + "-" + study_date + "-" + recon_kernel + "-" + slice_spacing;
+      outPath /= "vol" + patient_id + "_" + study_date + "-" + recon_kernel + "-" + slice_spacing;
       outPath.replace_extension( imageFormat );
 
       if ( !silent ) {
