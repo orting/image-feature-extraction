@@ -11,6 +11,7 @@
 int main( int argc, char* argv[] ) {
   if ( argc < 3 ) {
     std::cerr << "Usage: <infile> <outfile>" << std::endl;
+    return 1;
   }
 
   std::string infile(argv[1]);
