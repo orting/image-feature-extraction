@@ -70,12 +70,27 @@ readHR2( std::string path ) {
     throw std::runtime_error( "Error inflating" );
   }
 
-  // Convert to float
-  std::vector< float > buffer( inflated.size() / sizeof(float) );
-  std::copy( inflated.begin(),
-	     inflated.end(),
-	     reinterpret_cast<unsigned char*>(&buffer[0]) );
-  
+  std::vector< float > buffer;
+  if ( header.pixelType == HR2PixelType::Float ) {
+    // Read the inflated stream as a sequence of floats
+    // this assumes that a float can be read as a sequence of sizeof(float) unsigned chars
+    buffer.resize( inflated.size() / sizeof(float) );
+    std::copy( inflated.begin(),
+	       inflated.end(),
+	       reinterpret_cast<unsigned char*>(&buffer[0]) );
+  }
+  else if ( header.pixelType == HR2PixelType::Char ) {
+    // Read the inflated stream as a sequence of chars
+    std::vector< char > char_buffer( inflated.size() );
+    std::copy( inflated.begin(),
+	       inflated.end(),
+	       reinterpret_cast<unsigned char*>(&char_buffer[0]) );
+    // Convert the chars to floats
+    buffer.resize( inflated.size() );
+    for ( std::size_t i = 0; i < buffer.size(); ++i ) {
+      buffer[i] = static_cast<float>( char_buffer[i] );
+    }
+  }
   return std::make_pair(header, buffer);
 }
 
@@ -155,8 +170,9 @@ HR2Header readHR2Header( std::istream& is ) {
 
 // Check that header tags are consistent and supported
 void checkHeader( HR2Header header ) {
-  if ( header.pixelType != HR2PixelType::Float ) {
-    throw std::runtime_error("Only PixelType float implemented");
+  if ( header.pixelType != HR2PixelType::Float &&
+       header.pixelType != HR2PixelType::Char ) {
+    throw std::runtime_error("PixelType not implemented");
   }
 
   if ( header.compression != HR2Compression::ZLib ) {
@@ -208,6 +224,9 @@ unsigned int getFieldLength(std::istream& is) {
 HR2PixelType stoHR2PT(std::string s) {
   if (s == "float") {
     return HR2PixelType::Float;
+  }
+  if (s == "char") {
+    return HR2PixelType::Char;
   }
   throw std::invalid_argument("Unknown PixelType: '" + s + "'");
 }   

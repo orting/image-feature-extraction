@@ -18,7 +18,8 @@ enum struct HR2Tag {
 std::ostream& operator<<(std::ostream& os, const HR2Tag& tag);
 
 enum struct HR2PixelType {
-  Float
+  Float,
+  Char
 };
 
 enum struct HR2Compression {
