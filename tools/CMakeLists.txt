@@ -23,12 +23,12 @@ set( progs
   ConvertDICOM
   ConvertFromOctave
   ConvertHR2
-  CreateImageKernel3D
+  #CreateImageKernel3D
   DetermineHistogramBinEdges_MultiScaleEigenvalueFeatures
   GenerateROIsManyRegions
   MaskedImageFilter
   MaskedNormalizedConvolution
-  NormalizedConvolution
+  #NormalizedConvolution
   #FiniteDifference_HessianFeatures
   FiniteDifference_GradientFeatures
   CalculateExpectedDistanceFromCenterToInterestPoints
@@ -38,7 +38,9 @@ set( progs
   ExtractMaskedRegion
   ImageBrowser
   MakeBag
+  MakeBagDense
   MakeBagOnlyIntensity
+  MaskWithROI
 #  MakeBaggedDataset
   GenerateROIs
   PadImage
