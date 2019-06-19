@@ -2,6 +2,7 @@
 #define __DenseHistogram_h
 
 #include <algorithm>
+#include <numeric>
 #include <iterator>
 #include <vector>
 #include <limits>

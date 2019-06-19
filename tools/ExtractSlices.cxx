@@ -1,6 +1,7 @@
 /* 
    Extract slices from an image
  */
+#include <numeric>
 #include <string>
 #include <vector>
 
